@@ -2,7 +2,6 @@ using CoreService.Application.Abstractions.Audit;
 using CoreService.Application.Abstractions.Auth;
 using CoreService.Application.Abstractions.Common;
 using CoreService.Application.Abstractions.Users;
-using CoreService.Infrastructure.Identity;
 using CoreService.Infrastructure.Persistence;
 using CoreService.Infrastructure.Services.Audit;
 using CoreService.Infrastructure.Services.Auth;
@@ -25,24 +24,7 @@ public static class DependencyInjection
             opt.UseNpgsql(cs);
         });
 
-        services
-            .AddIdentityCore<ApplicationUser>(opt =>
-            {
-                opt.User.RequireUniqueEmail = true;
-
-                opt.Password.RequiredLength = 8;
-                opt.Password.RequireNonAlphanumeric = false;
-                opt.Password.RequireUppercase = true;
-                opt.Password.RequireLowercase = true;
-                opt.Password.RequireDigit = true;
-
-                opt.Lockout.MaxFailedAccessAttempts = 10;
-                opt.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
-            })
-            .AddRoles<ApplicationRole>()
-            .AddEntityFrameworkStores<CoreDbContext>();
-
-        // Options for JWT
+        // Options for JWT (для JwtTokenService)
         services.AddOptions<JwtOptions>()
             .Bind(cfg.GetSection(JwtOptions.SectionName))
             .Validate(o => !string.IsNullOrWhiteSpace(o.SigningKey), "Jwt:SigningKey is required")
@@ -51,10 +33,11 @@ public static class DependencyInjection
         // Common
         services.AddSingleton<IClock, SystemClock>();
 
-        // Auth
+        // Auth implementations
         services.AddScoped<IJwtTokenService, JwtTokenService>();
         services.AddScoped<IPasswordVerifier, PasswordVerifier>();
         services.AddScoped<IRefreshTokenStore, RefreshTokenStore>();
+        services.AddScoped<IPasswordResetService, PasswordResetService>();
 
         // Users
         services.AddScoped<IUserRepository, UserRepository>();
