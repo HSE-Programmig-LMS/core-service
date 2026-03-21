@@ -1,6 +1,7 @@
+using CoreService.Application.Abstractions.Users;
 using CoreService.Infrastructure.Identity;
 using CoreService.Infrastructure.Persistence;
-using Microsoft.AspNetCore.Identity;
+using CoreService.Infrastructure.Services.Users;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -34,6 +35,9 @@ public static class DependencyInjection
             })
             .AddRoles<ApplicationRole>()
             .AddEntityFrameworkStores<CoreDbContext>();
+
+        services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IRoleRepository, RoleRepository>();
 
         return services;
     }
