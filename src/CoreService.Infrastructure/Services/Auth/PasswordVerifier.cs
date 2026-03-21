@@ -2,6 +2,7 @@ using CoreService.Application.Abstractions.Auth;
 using CoreService.Application.Common.Errors;
 using CoreService.Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity;
+using AppPasswordVerificationResult = CoreService.Application.Abstractions.Auth.PasswordVerificationResult;
 
 namespace CoreService.Infrastructure.Services.Auth;
 
@@ -14,14 +15,14 @@ public sealed class PasswordVerifier : IPasswordVerifier
         _userManager = userManager;
     }
 
-    public async Task<PasswordVerificationResult> VerifyAsync(
+    public async Task<AppPasswordVerificationResult> VerifyAsync(
         string email,
         string password,
         CancellationToken ct = default)
     {
         if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
         {
-            return new PasswordVerificationResult(
+            return new AppPasswordVerificationResult(
                 IsValid: false,
                 UserId: null,
                 Email: null,
@@ -36,7 +37,7 @@ public sealed class PasswordVerifier : IPasswordVerifier
         if (user is null)
         {
             // Не раскрываем факт существования пользователя
-            return new PasswordVerificationResult(
+            return new AppPasswordVerificationResult(
                 IsValid: false,
                 UserId: null,
                 Email: null,
@@ -48,7 +49,7 @@ public sealed class PasswordVerifier : IPasswordVerifier
 
         if (!user.IsActive)
         {
-            return new PasswordVerificationResult(
+            return new AppPasswordVerificationResult(
                 IsValid: false,
                 UserId: user.Id,
                 Email: user.Email,
@@ -61,7 +62,7 @@ public sealed class PasswordVerifier : IPasswordVerifier
         // Lockout check
         if (await _userManager.IsLockedOutAsync(user))
         {
-            return new PasswordVerificationResult(
+            return new AppPasswordVerificationResult(
                 IsValid: false,
                 UserId: user.Id,
                 Email: user.Email,
@@ -80,7 +81,7 @@ public sealed class PasswordVerifier : IPasswordVerifier
             // если после увеличения он залочился — вернём locked_out
             if (await _userManager.IsLockedOutAsync(user))
             {
-                return new PasswordVerificationResult(
+                return new AppPasswordVerificationResult(
                     IsValid: false,
                     UserId: user.Id,
                     Email: user.Email,
@@ -90,7 +91,7 @@ public sealed class PasswordVerifier : IPasswordVerifier
                     FailureCode: ErrorCodes.LockedOut);
             }
 
-            return new PasswordVerificationResult(
+            return new AppPasswordVerificationResult(
                 IsValid: false,
                 UserId: user.Id,
                 Email: user.Email,
@@ -110,7 +111,7 @@ public sealed class PasswordVerifier : IPasswordVerifier
         if (string.IsNullOrWhiteSpace(roleCode))
         {
             // конфигурационная ошибка (роль не назначена)
-            return new PasswordVerificationResult(
+            return new AppPasswordVerificationResult(
                 IsValid: false,
                 UserId: user.Id,
                 Email: user.Email,
@@ -120,7 +121,7 @@ public sealed class PasswordVerifier : IPasswordVerifier
                 FailureCode: ErrorCodes.InternalError);
         }
 
-        return new PasswordVerificationResult(
+        return new AppPasswordVerificationResult(
             IsValid: true,
             UserId: user.Id,
             Email: user.Email ?? email,
