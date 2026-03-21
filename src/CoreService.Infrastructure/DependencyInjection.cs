@@ -1,6 +1,8 @@
+using CoreService.Application.Abstractions.Audit;
 using CoreService.Application.Abstractions.Users;
 using CoreService.Infrastructure.Identity;
 using CoreService.Infrastructure.Persistence;
+using CoreService.Infrastructure.Services.Audit;
 using CoreService.Infrastructure.Services.Users;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -38,6 +40,9 @@ public static class DependencyInjection
 
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IRoleRepository, RoleRepository>();
+
+        services.AddScoped<IAuditWriter, AuditWriter>();
+        services.AddScoped<IAuditIngestStore, AuditIngestStore>();
 
         return services;
     }

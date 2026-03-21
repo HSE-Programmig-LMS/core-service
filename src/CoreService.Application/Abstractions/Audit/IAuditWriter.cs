@@ -14,4 +14,6 @@ public sealed record AuditWriteEntry(
     Guid? ActorUserId,
     string EntityType,
     Guid? EntityId,
-    string DetailsJson);
+    string DetailsJson,
+    Guid? EventId = null,
+    DateTimeOffset? CreatedAtUtc = null);
