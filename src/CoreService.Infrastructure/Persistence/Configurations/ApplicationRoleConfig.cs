@@ -1,5 +1,4 @@
 using CoreService.Domain.Security;
-using CoreService.Domain.Security;
 using CoreService.Infrastructure.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
