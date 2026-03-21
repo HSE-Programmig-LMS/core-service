@@ -12,4 +12,5 @@ public static class ErrorCodes
     public const string RoleNotFound = "role_not_found";
     public const string EmailAlreadyExists = "email_already_exists";
     public const string InvalidRefreshToken = "invalid_refresh_token";
+    public const string InvalidResetToken = "invalid_reset_token";
 }

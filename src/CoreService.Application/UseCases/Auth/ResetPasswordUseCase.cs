@@ -29,7 +29,7 @@ public sealed class ResetPasswordUseCase
         // Не раскрываем детали (например, "email не существует")
         // Возвращаем общий код ошибки.
         return Result<bool>.Fail(new AppError(
-            Code: "invalid_reset_token",
+            Code: ErrorCodes.InvalidResetToken,
             Message: "Password reset failed."
         ));
     }
