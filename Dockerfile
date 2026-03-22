@@ -21,6 +21,11 @@ RUN dotnet publish src/CoreService.Api/CoreService.Api.csproj -c Release -o /app
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
 WORKDIR /app
 
+# Needed for docker-compose healthcheck
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends curl \
+  && rm -rf /var/lib/apt/lists/*
+
 # App listens on 8080 inside container
 ENV ASPNETCORE_URLS=http://+:8080
 EXPOSE 8080
