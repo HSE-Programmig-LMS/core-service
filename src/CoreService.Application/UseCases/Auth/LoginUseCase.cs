@@ -41,7 +41,6 @@ public sealed class LoginUseCase
 
         if (!verification.IsValid)
         {
-            // Minimal leakage: we map specific reasons to generic messages where appropriate.
             return verification.FailureCode switch
             {
                 ErrorCodes.UserInactive => Result<LoginResponse>.Fail(AppError.UserInactive()),
@@ -57,7 +56,7 @@ public sealed class LoginUseCase
 
         var access = await _jwtTokenService.CreateAccessTokenAsync(userId, role, email, ct);
 
-        var refreshRaw = GenerateSecureToken(64); // 64 bytes -> base64url string
+        var refreshRaw = GenerateSecureToken(64); // 64 bytes => base64url string
         var refreshExpiresAt = _clock.UtcNow.Add(_refreshTokenLifetime);
 
         await _refreshTokenStore.StoreAsync(userId, refreshRaw, refreshExpiresAt, ct);

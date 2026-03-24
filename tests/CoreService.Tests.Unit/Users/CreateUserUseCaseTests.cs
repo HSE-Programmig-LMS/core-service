@@ -23,7 +23,7 @@ public sealed class CreateUserUseCaseTests
 
         var sut = new CreateUserUseCase(users, roles, audit, ctx);
 
-        // Act (missing all required)
+        // Act
         var result = await sut.ExecuteAsync(new CreateUserRequest(
             Email: "",
             Password: "",
@@ -188,7 +188,6 @@ public sealed class CreateUserUseCaseTests
         await users.Received(1).CreateAsync(Arg.Any<CreateUserData>(), Arg.Any<CancellationToken>());
         await users.Received(1).SetUserRoleAsync(userId, "manager", Arg.Any<CancellationToken>());
 
-        // Audit should not be written because operation didn't complete
         await audit.DidNotReceiveWithAnyArgs().WriteAsync(default!, default);
     }
 
@@ -259,7 +258,6 @@ public sealed class CreateUserUseCaseTests
         var users = Substitute.For<IUserRepository>();
         users.EmailExistsAsync("a@b.com", Arg.Any<CancellationToken>()).Returns(false);
 
-        // CreateAsync returns dto without role (role is assigned after)
         users.CreateAsync(Arg.Any<CreateUserData>(), Arg.Any<CancellationToken>())
             .Returns(new UserDto(
                 UserId: userId,
@@ -325,14 +323,14 @@ public sealed class CreateUserUseCaseTests
         await audit.Received(2).WriteAsync(Arg.Any<AuditWriteEntry>(), Arg.Any<CancellationToken>());
         Assert.Equal(2, auditEntries.Count);
 
-        // 1) core.user.created
+        // core.user.created
         Assert.Equal(AuditEventTypes.CoreUserCreated, auditEntries[0].EventType);
         Assert.Equal(actorId, auditEntries[0].ActorUserId);
         Assert.Equal(AuditEntityTypes.User, auditEntries[0].EntityType);
         Assert.Equal(userId, auditEntries[0].EntityId);
         Assert.Contains("a@b.com", auditEntries[0].DetailsJson);
 
-        // 2) core.user.role.changed
+        // core.user.role.changed
         Assert.Equal(AuditEventTypes.CoreUserRoleChanged, auditEntries[1].EventType);
         Assert.Equal(actorId, auditEntries[1].ActorUserId);
         Assert.Equal(AuditEntityTypes.User, auditEntries[1].EntityType);

@@ -20,10 +20,8 @@ public sealed class PasswordResetService : IPasswordResetService
         var user = await _userManager.FindByEmailAsync(email);
         if (user is null) return null;
 
-        // Ваше бизнес-правило: неактивному пользователю сброс не даём.
         if (!user.IsActive) return null;
 
-        // Identity token (будет валиден при наличии token providers)
         var token = await _userManager.GeneratePasswordResetTokenAsync(user);
         return token;
     }
@@ -44,7 +42,6 @@ public sealed class PasswordResetService : IPasswordResetService
         var user = await _userManager.FindByEmailAsync(email);
         if (user is null || !user.IsActive)
         {
-            // Не раскрываем причину
             return new PasswordResetResult(false, "invalid_reset_token", "Invalid token.");
         }
 
@@ -52,7 +49,6 @@ public sealed class PasswordResetService : IPasswordResetService
         if (res.Succeeded)
             return new PasswordResetResult(true);
 
-        // Детали ошибок наружу не выдаём (но можно логировать)
         return new PasswordResetResult(false, "invalid_reset_token", "Reset failed.");
     }
 }

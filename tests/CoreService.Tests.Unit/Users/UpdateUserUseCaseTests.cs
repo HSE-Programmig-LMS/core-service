@@ -342,7 +342,7 @@ public sealed class UpdateUserUseCaseTests
             CreatedAtUtc: DateTimeOffset.UtcNow.AddDays(-5),
             LastLoginAtUtc: null);
 
-        var updatedFromUpdate = current with { FirstName = "New" }; // роль ещё старая
+        var updatedFromUpdate = current with { FirstName = "New" };
         var finalReload = updatedFromUpdate with { Role = "teacher" };
 
         var users = Substitute.For<IUserRepository>();

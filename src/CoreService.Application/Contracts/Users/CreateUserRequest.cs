@@ -2,7 +2,7 @@ namespace CoreService.Application.Contracts.Users;
 
 /// <summary>
 /// Создание пользователя менеджером.
-/// Role — обязательна (у пользователя одна роль).
+/// Role — обязательна
 /// </summary>
 public sealed record CreateUserRequest(
     string Email,

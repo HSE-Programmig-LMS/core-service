@@ -2,8 +2,6 @@ namespace CoreService.Application.Abstractions.Auth;
 
 /// <summary>
 /// Абстракция проверки email+password.
-/// Реализация будет в инфраструктуре (Identity UserManager/SignInManager),
-/// чтобы Application не зависел от Identity.
 /// </summary>
 public interface IPasswordVerifier
 {
@@ -15,7 +13,7 @@ public interface IPasswordVerifier
 
 /// <summary>
 /// Результат проверки пароля.
-/// Если IsValid = false, Code содержит причину (например invalid_credentials/locked_out/user_inactive).
+/// Если IsValid = false, Code содержит причину
 /// </summary>
 public sealed record PasswordVerificationResult(
     bool IsValid,

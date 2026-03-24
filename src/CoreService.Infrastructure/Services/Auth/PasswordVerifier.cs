@@ -32,7 +32,6 @@ public sealed class PasswordVerifier : IPasswordVerifier
                 FailureCode: ErrorCodes.InvalidCredentials);
         }
 
-        // Identity нормализует email сам, но FindByEmailAsync ожидает "как есть"
         var user = await _userManager.FindByEmailAsync(email);
         if (user is null)
         {
@@ -75,7 +74,7 @@ public sealed class PasswordVerifier : IPasswordVerifier
         var ok = await _userManager.CheckPasswordAsync(user, password);
         if (!ok)
         {
-            // увеличиваем счётчик ошибок (может привести к lockout)
+            // увеличиваем счётчик ошибок
             await _userManager.AccessFailedAsync(user);
 
             // если после увеличения он залочился — вернём locked_out
@@ -101,16 +100,15 @@ public sealed class PasswordVerifier : IPasswordVerifier
                 FailureCode: ErrorCodes.InvalidCredentials);
         }
 
-        // успешный вход: сбрасываем счётчик ошибок
         await _userManager.ResetAccessFailedCountAsync(user);
 
-        // получаем роль (по нашему правилу — одна роль)
+        // получаем роль
         var roles = await _userManager.GetRolesAsync(user);
         var roleCode = roles.Count == 1 ? roles[0] : null;
 
         if (string.IsNullOrWhiteSpace(roleCode))
         {
-            // конфигурационная ошибка (роль не назначена)
+            // конфигурационная ошибка
             return new AppPasswordVerificationResult(
                 IsValid: false,
                 UserId: user.Id,

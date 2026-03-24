@@ -13,7 +13,7 @@ public sealed class ApplicationRoleConfig : IEntityTypeConfiguration<Application
 
         e.Property(x => x.Id).HasColumnName("role_id");
 
-        // RoleCode enum -> string ("student"/"manager") via mapper
+        // RoleCode enum to string ("student"/"manager") via mapper
         e.Property(x => x.RoleCode)
             .HasColumnName("role_code")
             .HasConversion(

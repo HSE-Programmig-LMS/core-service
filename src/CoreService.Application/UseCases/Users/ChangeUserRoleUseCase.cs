@@ -44,7 +44,7 @@ public sealed class ChangeUserRoleUseCase
 
         var oldRole = user.Role;
         if (string.Equals(oldRole, newRole, StringComparison.OrdinalIgnoreCase))
-            return Result<UserDto>.Ok(user); // no-op
+            return Result<UserDto>.Ok(user);
 
         var ok = await _users.SetUserRoleAsync(userId, newRole, ct);
         if (!ok)

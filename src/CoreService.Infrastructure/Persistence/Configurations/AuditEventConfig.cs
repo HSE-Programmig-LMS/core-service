@@ -24,6 +24,6 @@ public sealed class AuditEventConfig : IEntityTypeConfiguration<AuditEvent>
             .HasColumnType("jsonb");
 
         e.HasIndex(x => x.CreatedAt);
-        e.HasIndex(x => x.EventId).IsUnique(); // дедупликация на ingest
+        e.HasIndex(x => x.EventId).IsUnique();
     }
 }

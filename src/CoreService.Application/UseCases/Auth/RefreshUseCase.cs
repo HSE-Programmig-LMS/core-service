@@ -39,24 +39,24 @@ public sealed class RefreshUseCase
                     new Dictionary<string, string[]> { ["RefreshToken"] = new[] { "RefreshToken is required." } }));
         }
 
-        // 1) Проверяем, что refresh токен активен
+        // Проверяем, что refresh токен активен
         var active = await _refreshTokenStore.GetActiveAsync(request.RefreshToken, ct);
         if (active is null)
             return Result<RefreshResponse>.Fail(new AppError(ErrorCodes.InvalidRefreshToken, "Invalid refresh token."));
 
-        // 2) Загружаем пользователя и роль (для JWT)
+        // Загружаем пользователя и роль (для JWT)
         var user = await _users.GetByIdAsync(active.UserId, ct);
         if (user is null || !user.IsActive)
             return Result<RefreshResponse>.Fail(AppError.Unauthorized());
 
-        // 3) Генерим access
+        // Генерим access
         var access = await _jwtTokenService.CreateAccessTokenAsync(user.UserId, user.Role, user.Email, ct);
 
-        // 4) Генерим новый refresh
+        // Генерим новый refresh
         var newRefreshRaw = GenerateSecureToken(64);
         var newRefreshExpiresAt = _clock.UtcNow.Add(_refreshTokenLifetime);
 
-        // 5) Rotation (атомарно: revoke старый + вставить новый)
+        // Rotation
         var rotated = await _refreshTokenStore.RotateAsync(
             oldRawRefreshToken: request.RefreshToken,
             newRawRefreshToken: newRefreshRaw,

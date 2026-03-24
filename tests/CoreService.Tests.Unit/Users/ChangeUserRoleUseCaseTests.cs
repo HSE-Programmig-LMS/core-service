@@ -258,7 +258,6 @@ public sealed class ChangeUserRoleUseCaseTests
         Assert.Equal(AuditEntityTypes.User, captured.EntityType);
         Assert.Equal(userId, captured.EntityId);
 
-        // DetailsJson should include old and new roles
         Assert.Contains("assistant", captured.DetailsJson);
         Assert.Contains("teacher", captured.DetailsJson);
     }

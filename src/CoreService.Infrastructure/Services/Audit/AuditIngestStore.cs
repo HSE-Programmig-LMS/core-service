@@ -19,8 +19,6 @@ public sealed class AuditIngestStore : IAuditIngestStore
     {
         if (events.Count == 0) return 0;
 
-        // Batch insert with ON CONFLICT DO NOTHING
-        // We build parameterized SQL to avoid injection.
         var sql = new System.Text.StringBuilder();
         var parameters = new List<object>();
 

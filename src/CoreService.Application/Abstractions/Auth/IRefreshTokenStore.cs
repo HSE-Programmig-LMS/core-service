@@ -2,7 +2,7 @@ namespace CoreService.Application.Abstractions.Auth;
 
 /// <summary>
 /// Хранилище refresh токенов. Application передаёт "сырой" refresh token,
-/// а инфраструктура должна сохранить его безопасно (например, хранить только hash).
+/// а инфраструктура должна сохранить его безопасно
 /// </summary>
 public interface IRefreshTokenStore
 {
@@ -13,7 +13,7 @@ public interface IRefreshTokenStore
         CancellationToken ct = default);
 
     /// <summary>
-    /// Возвращает запись токена, если он активен (не revoked и не истёк).
+    /// Возвращает запись токена, если он активен 
     /// </summary>
     Task<ActiveRefreshToken?> GetActiveAsync(
         string rawRefreshToken,
@@ -30,7 +30,7 @@ public interface IRefreshTokenStore
         CancellationToken ct = default);
 
     /// <summary>
-    /// Отозвать refresh token (например, при logout).
+    /// Отозвать refresh token
     /// Операция идемпотентна: если токен не найден — просто ничего не делает.
     /// </summary>
     Task RevokeAsync(

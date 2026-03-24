@@ -19,7 +19,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Controllers
 builder.Services.AddControllers();
 
-// Swagger/OpenAPI (dev)
+// Swagger/OpenAPI
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
@@ -41,7 +41,7 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
-// Infra: DbContext + реализации интерфейсов (JwtTokenService, repos, audit, etc.)
+//DbContext + Interfacies (JwtTokenService, repos, audit, etc.)
 builder.Services.AddCoreInfrastructure(builder.Configuration);
 
 // Http context access + IUserContext
@@ -94,14 +94,13 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-// Authorization policies (RequireManager)
+// Authorization policies
 builder.Services.AddAuthorization(o => Policies.AddAuthorizationPolicies(o));
 
 // Health checks
 builder.Services.AddHealthChecks();
 
 // UseCases registration
-// Refresh lifetime from config (days). Default 30.
 var refreshDays = builder.Configuration.GetValue<int?>("Auth:RefreshTokenLifetimeDays") ?? 30;
 var refreshLifetime = TimeSpan.FromDays(refreshDays);
 

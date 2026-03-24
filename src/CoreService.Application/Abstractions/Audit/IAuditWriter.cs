@@ -6,7 +6,7 @@ public interface IAuditWriter
 }
 
 /// <summary>
-/// Минимальная запись аудита (append-only).
+/// Минимальная запись аудита
 /// DetailsJson — строка JSON.
 /// </summary>
 public sealed record AuditWriteEntry(

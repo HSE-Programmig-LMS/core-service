@@ -23,7 +23,6 @@ public sealed class LogoutUseCase
                     new Dictionary<string, string[]> { ["RefreshToken"] = new[] { "RefreshToken is required." } }));
         }
 
-        // Logout делаем идемпотентным: даже если токена нет — OK.
         await _refreshTokenStore.RevokeAsync(request.RefreshToken, ct);
         return Result<bool>.Ok(true);
     }

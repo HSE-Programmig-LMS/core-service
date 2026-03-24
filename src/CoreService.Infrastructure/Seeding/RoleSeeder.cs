@@ -28,7 +28,6 @@ public sealed class RoleSeeder
                 RoleCode = code,
                 RoleName = RoleCodeMapper.ToDisplay(code),
 
-                // Identity внутренне опирается на Name/NormalizedName
                 Name = codeStr,
                 NormalizedName = normalized
             };

@@ -26,7 +26,6 @@ public sealed class ResetPasswordUseCase
         if (result.Succeeded)
             return Result<bool>.Ok(true);
 
-        // Не раскрываем детали (например, "email не существует")
         // Возвращаем общий код ошибки.
         return Result<bool>.Fail(new AppError(
             Code: ErrorCodes.InvalidResetToken,

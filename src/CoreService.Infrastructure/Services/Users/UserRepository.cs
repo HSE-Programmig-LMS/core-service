@@ -28,7 +28,6 @@ public sealed class UserRepository : IUserRepository
 
     public async Task<UserDto?> GetByIdAsync(Guid userId, CancellationToken ct = default)
     {
-        // join: users -> user_roles -> roles
         var query =
             from u in _db.Users.AsNoTracking()
             join ur in _db.Set<ApplicationUserRole>().AsNoTracking()
@@ -54,7 +53,6 @@ public sealed class UserRepository : IUserRepository
 
     public async Task<PagedResult<UserDto>> GetListAsync(UsersQuery query, CancellationToken ct = default)
     {
-        // Важно: у вас 1 роль на пользователя, поэтому join не раздувает строки
         var baseQuery =
             from u in _db.Users.AsNoTracking()
             join ur in _db.Set<ApplicationUserRole>().AsNoTracking()
@@ -80,15 +78,13 @@ public sealed class UserRepository : IUserRepository
             baseQuery = baseQuery.Where(x => (x.roleName ?? "").ToLower() == role);
         }
 
-        // TotalCount
         var total = await baseQuery.LongCountAsync(ct);
 
-        // Order + pagination
         var page = query.Page;
         var size = query.PageSize;
 
         var items = await baseQuery
-            .OrderBy(x => x.u.Email) // можно поменять на CreatedAt desc
+            .OrderBy(x => x.u.Email)
             .Skip((page - 1) * size)
             .Take(size)
             .Select(x => new UserDto(
@@ -112,7 +108,7 @@ public sealed class UserRepository : IUserRepository
         {
             Id = Guid.NewGuid(),
             Email = data.Email,
-            UserName = data.Email, // удобно использовать email как username
+            UserName = data.Email,
             FirstName = data.FirstName,
             LastName = data.LastName,
             IsActive = data.IsActive,
@@ -126,7 +122,6 @@ public sealed class UserRepository : IUserRepository
             throw new InvalidOperationException("User creation failed: " + msg);
         }
 
-        // role на этом шаге может быть пустым (назначается use-case’ом отдельно)
         return new UserDto(
             UserId: user.Id,
             Email: user.Email ?? "",
@@ -148,7 +143,7 @@ public sealed class UserRepository : IUserRepository
         if (!string.IsNullOrWhiteSpace(data.Email) &&
             !string.Equals(data.Email, user.Email, StringComparison.OrdinalIgnoreCase))
         {
-            // UserName = Email (упрощаем)
+            // UserName = Email
             var setEmail = await _userManager.SetEmailAsync(user, data.Email);
             if (!setEmail.Succeeded)
                 throw new InvalidOperationException("SetEmail failed: " + string.Join("; ", setEmail.Errors.Select(e => e.Description)));
@@ -166,7 +161,6 @@ public sealed class UserRepository : IUserRepository
         if (!res.Succeeded)
             throw new InvalidOperationException("User update failed: " + string.Join("; ", res.Errors.Select(e => e.Description)));
 
-        // вернём актуальную DTO (с ролью через join)
         return await GetByIdAsync(user.Id, ct);
     }
 
@@ -198,7 +192,6 @@ public sealed class UserRepository : IUserRepository
         var user = await _userManager.FindByIdAsync(userId.ToString());
         if (user is null) return false;
 
-        // У нас 1 роль на пользователя: удаляем все и добавляем новую
         var current = await _userManager.GetRolesAsync(user);
         if (current.Count > 0)
         {

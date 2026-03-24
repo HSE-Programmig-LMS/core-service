@@ -44,7 +44,6 @@ public sealed class CreateUserUseCase
         if (await _users.EmailExistsAsync(request.Email, ct))
             return Result<UserDto>.Fail(new AppError(ErrorCodes.EmailAlreadyExists, "Email already exists."));
 
-        // Создаём пользователя (без роли), затем назначаем роль и читаем итоговую DTO.
         var created = await _users.CreateAsync(
             new CreateUserData(
                 Email: request.Email,
@@ -80,7 +79,7 @@ public sealed class CreateUserUseCase
             })
         ), ct);
 
-        // core.user.role.changed (используем и для первичного назначения)
+        // core.user.role.changed
         await _audit.WriteAsync(new AuditWriteEntry(
             EventType: AuditEventTypes.CoreUserRoleChanged,
             ActorUserId: actorId,

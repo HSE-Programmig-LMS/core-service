@@ -7,7 +7,6 @@ public sealed class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<Cor
 {
     public CoreDbContext CreateDbContext(string[] args)
     {
-        // Для миграций удобно иметь CORE_DB_CS env var
         var cs = Environment.GetEnvironmentVariable("CORE_DB_CS");
         if (string.IsNullOrWhiteSpace(cs))
             throw new InvalidOperationException(

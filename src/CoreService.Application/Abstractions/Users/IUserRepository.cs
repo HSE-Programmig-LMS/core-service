@@ -4,10 +4,14 @@ namespace CoreService.Application.Abstractions.Users;
 
 public interface IUserRepository
 {
-    /// <summary>Проверка существования email (для предотвращения дублей).</summary>
+    /// <summary>
+    /// Проверка существования email
+    /// </summary>
     Task<bool> EmailExistsAsync(string email, CancellationToken ct = default);
 
-    /// <summary>Получить пользователя по id. Возвращает null если не найден.</summary>
+    /// <summary>
+    /// Получить пользователя по id. Возвращает null если не найден
+    /// </summary>
     Task<UserDto?> GetByIdAsync(Guid userId, CancellationToken ct = default);
 
     /// <summary>
@@ -16,39 +20,37 @@ public interface IUserRepository
     Task<PagedResult<UserDto>> GetListAsync(UsersQuery query, CancellationToken ct = default);
 
     /// <summary>
-    /// Создать пользователя (без назначения роли).
-    /// Пароль может быть null, если ты хочешь создавать пользователя и отправлять reset-link позже.
+    /// Создать пользователя без назначения роли
     /// </summary>
     Task<UserDto> CreateAsync(CreateUserData data, CancellationToken ct = default);
 
     /// <summary>
-    /// Обновить базовые поля пользователя (email, имя/фамилия, is_active).
+    /// Обновить базовые поля пользователя
     /// Возвращает null если пользователь не найден.
     /// </summary>
     Task<UserDto?> UpdateAsync(Guid userId, UpdateUserData data, CancellationToken ct = default);
 
     /// <summary>
-    /// Деактивировать (soft delete) пользователя.
+    /// Деактивировать пользователя.
     /// Возвращает false если пользователь не найден.
     /// </summary>
     Task<bool> DeactivateAsync(Guid userId, CancellationToken ct = default);
 
     /// <summary>
-    /// Получить роль пользователя (role_code), если назначена.
+    /// Получить роль пользователя, если назначена.
     /// Возвращает null, если роль не назначена/пользователь не найден.
     /// </summary>
     Task<string?> GetUserRoleAsync(Guid userId, CancellationToken ct = default);
 
     /// <summary>
-    /// Установить роль пользователя (в вашем правиле — строго одну).
-    /// Реализация должна гарантировать "одна роль" (replace old -> new).
+    /// Установить роль пользователя
     /// Возвращает false если пользователь не найден.
     /// </summary>
     Task<bool> SetUserRoleAsync(Guid userId, string roleCode, CancellationToken ct = default);
 }
 
 /// <summary>
-/// Данные для создания пользователя (уровень Application).
+/// Данные для создания пользователя
 /// </summary>
 public sealed record CreateUserData(
     string Email,

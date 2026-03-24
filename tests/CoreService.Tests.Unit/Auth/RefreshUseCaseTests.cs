@@ -187,7 +187,6 @@ public sealed class RefreshUseCaseTests
         store.GetActiveAsync("old", Arg.Any<CancellationToken>())
             .Returns(new ActiveRefreshToken(userId, now.AddDays(1)));
 
-        // Capture args passed to RotateAsync
         string? newRawCaptured = null;
         DateTimeOffset newExpCaptured = default;
 
@@ -232,7 +231,6 @@ public sealed class RefreshUseCaseTests
 
         Assert.Equal(now.Add(refreshLifetime), resp.RefreshTokenExpiresAtUtc);
 
-        // RotateAsync should receive the same new refresh token that is returned to the client
         await store.Received(1).RotateAsync("old", Arg.Any<string>(), now.Add(refreshLifetime), Arg.Any<CancellationToken>());
         Assert.Equal(resp.RefreshToken, newRawCaptured);
         Assert.Equal(resp.RefreshTokenExpiresAtUtc, newExpCaptured);

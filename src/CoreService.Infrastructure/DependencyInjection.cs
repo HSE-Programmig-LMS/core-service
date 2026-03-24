@@ -24,7 +24,7 @@ public static class DependencyInjection
             opt.UseNpgsql(cs);
         });
 
-        // Options for JWT (для JwtTokenService)
+        // Options for JWT
         services.AddOptions<JwtOptions>()
             .Bind(cfg.GetSection(JwtOptions.SectionName))
             .Validate(o => !string.IsNullOrWhiteSpace(o.SigningKey), "Jwt:SigningKey is required")

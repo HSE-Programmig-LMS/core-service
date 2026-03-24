@@ -1,8 +1,7 @@
-# -------- build stage --------
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /src
 
-# Copy solution + project files first for better layer caching
+# Copy solution
 COPY CoreService.slnx ./
 
 COPY src/CoreService.Api/CoreService.Api.csproj src/CoreService.Api/
@@ -17,7 +16,6 @@ RUN dotnet restore src/CoreService.Api/CoreService.Api.csproj
 COPY . .
 RUN dotnet publish src/CoreService.Api/CoreService.Api.csproj -c Release -o /app/publish /p:UseAppHost=false
 
-# -------- runtime stage --------
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
 WORKDIR /app
 

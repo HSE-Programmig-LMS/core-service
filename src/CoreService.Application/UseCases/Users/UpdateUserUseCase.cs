@@ -36,7 +36,7 @@ public sealed class UpdateUserUseCase
         if (current is null)
             return Result<UserDto>.Fail(new AppError(ErrorCodes.UserNotFound, "User not found."));
 
-        // Email uniqueness check (only if changed)
+        // Email uniqueness check
         if (!string.IsNullOrWhiteSpace(request.Email) &&
             !string.Equals(request.Email, current.Email, StringComparison.OrdinalIgnoreCase))
         {
@@ -64,7 +64,7 @@ public sealed class UpdateUserUseCase
         if (updated is null)
             return Result<UserDto>.Fail(new AppError(ErrorCodes.UserNotFound, "User not found."));
 
-        // Role change (optional)
+        // Role change
         if (normalizedRole is not null && !string.Equals(current.Role, normalizedRole, StringComparison.OrdinalIgnoreCase))
         {
             var ok = await _users.SetUserRoleAsync(userId, normalizedRole, ct);
@@ -80,7 +80,7 @@ public sealed class UpdateUserUseCase
             ), ct);
         }
 
-        // Reload to ensure role is актуальная
+        // Reload to ensure role
         var finalUser = await _users.GetByIdAsync(userId, ct);
         if (finalUser is null)
             return Result<UserDto>.Fail(AppError.Internal("User updated but cannot be loaded."));

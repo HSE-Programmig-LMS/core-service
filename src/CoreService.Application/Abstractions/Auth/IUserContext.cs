@@ -1,8 +1,7 @@
 namespace CoreService.Application.Abstractions.Auth;
 
 /// <summary>
-/// Контекст текущего пользователя (из JWT/HTTP контекста).
-/// Реализация будет в API/Infrastructure.
+/// Контекст текущего пользователя
 /// </summary>
 public interface IUserContext
 {

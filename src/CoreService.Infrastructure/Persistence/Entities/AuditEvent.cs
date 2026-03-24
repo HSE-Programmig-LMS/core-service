@@ -4,12 +4,12 @@ public sealed class AuditEvent
 {
     public Guid EventId { get; set; } = Guid.NewGuid();
 
-    public string EventType { get; set; } = "";       // e.g. "study.grade.updated"
-    public Guid? ActorUserId { get; set; }            // nullable for system events
+    public string EventType { get; set; } = "";
+    public Guid? ActorUserId { get; set; }
     public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;
 
-    public string EntityType { get; set; } = "";      // e.g. "grade"
-    public Guid? EntityId { get; set; }               // nullable
+    public string EntityType { get; set; } = "";
+    public Guid? EntityId { get; set; }
 
-    public string Details { get; set; } = "{}";       // jsonb payload
+    public string Details { get; set; } = "{}";
 }

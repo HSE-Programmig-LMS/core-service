@@ -20,7 +20,6 @@ public sealed class RoleRepository : IRoleRepository
         var normalized = NormalizeRoleCode(roleCode);
         if (normalized is null) return false;
 
-        // Identity ищет по Name (мы храним Name="manager"/"student" и т.п.)
         var role = await _roleManager.FindByNameAsync(normalized);
         return role is not null;
     }

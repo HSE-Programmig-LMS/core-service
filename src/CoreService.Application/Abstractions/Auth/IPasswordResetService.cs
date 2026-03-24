@@ -1,13 +1,13 @@
 namespace CoreService.Application.Abstractions.Auth;
 
 /// <summary>
-/// Абстракция для механизма сброса пароля (на базе Identity, но Application об этом не знает).
+/// Абстракция для механизма сброса пароля
 /// </summary>
 public interface IPasswordResetService
 {
     /// <summary>
     /// Возвращает токен сброса пароля, если пользователь существует и может сбрасывать пароль.
-    /// Если пользователя нет/неактивен — возвращает null (чтобы UseCase мог не "палить" существование).
+    /// Если пользователя нет/неактивен — возвращает null
     /// </summary>
     Task<string?> GenerateResetTokenAsync(string email, CancellationToken ct = default);
 
