@@ -10,12 +10,11 @@ public sealed class ApplicationUserRoleConfig : IEntityTypeConfiguration<Applica
     {
         e.ToTable("user_roles");
 
-        e.Property(x => x.UserRoleId).HasColumnName("user_role_id");
         e.Property(x => x.UserId).HasColumnName("user_id");
         e.Property(x => x.RoleId).HasColumnName("role_id");
         e.Property(x => x.AssignedAt).HasColumnName("assigned_at");
 
-        e.HasKey(x => x.UserRoleId);
+        e.HasKey(x => new {x.UserId, x.RoleId});
 
         e.HasIndex(x => new { x.UserId, x.RoleId }).IsUnique();
         e.HasIndex(x => x.UserId).IsUnique();
