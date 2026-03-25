@@ -146,12 +146,18 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 
-    using var scope = app.Services.CreateScope();
+    using (var scope = app.Services.CreateScope()) {
     var db = scope.ServiceProvider.GetRequiredService<CoreDbContext>();
     await db.Database.MigrateAsync();
 
-    var seeder = new RoleSeeder(scope.ServiceProvider.GetRequiredService<RoleManager<ApplicationRole>>());
-    await seeder.SeedAsync();
+    var roleSeeder = new RoleSeeder(scope.ServiceProvider.GetRequiredService<RoleManager<ApplicationRole>>());
+    await roleSeeder.SeedAsync();
+
+     var managerSeeder = new BootstrapManagerSeeder(
+        scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>(),
+        scope.ServiceProvider.GetRequiredService<RoleManager<ApplicationRole>>());
+    await managerSeeder.SeedIfConfiguredAsync(app.Configuration);
+    }
 }
 
 app.UseAuthentication();
